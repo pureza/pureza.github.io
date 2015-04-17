@@ -7,13 +7,13 @@ var PI = Math.PI,
   sqrt = Math.sqrt;
 
 
-var points = 20, // Number of points to draw for each petal
-    T = 80,      // Staircase's tread (horizontal) length
+var points = 200, // Number of points to draw for each petal
+    T = 60,      // Staircase's tread (horizontal) length
     R = 60,      // Staircase's riser (vertical) length
-    N = 7,       // Number of petals
+    N = 1,       // Number of petals
     steps = 10,  // Number of steps
     Ox = 100,
-    Oy = 100;
+    Oy = 200;
 
 // Negated slope of the riser
 var m = T/R;
@@ -32,6 +32,58 @@ function r(theta) {
   } else {
     return y0 * exp(-1/m*(theta + PI/2));
   }
+}
+
+
+function theta(t) {
+  var dist = t * steps * (T + R);
+  var currentStep = Math.floor(dist / (T + R));
+
+  var currentStepDist = dist - currentStep * (T + R);
+  //var accumulatedAngle = currentStep * (theta1 + theta2);
+
+  if (currentStepDist <= R) {
+    // Is still in the riser bit
+    var c = 1; //log(y0)/m;
+    //console.log(-rad2deg((c - log(y0 + m*currentStepDist) / m)));
+
+    return -rad2deg((c - log(y0 + m*currentStepDist) / m));
+  } else {
+
+    c = PI - m*log(y0*m + R);
+
+    console.log(-rad2deg(c + log(y0*m + currentStepDist) * m));
+    //return +rad2deg(c + log(y0*m + currentStepDist) * m);
+    return -rad2deg((c - log(y0 + m*(currentStepDist - R)) / m));
+  }
+
+
+  //console.log(currentStepDist);
+  //
+  ////var currentStep = Math.floor(t * steps);
+  //var tWithinStep = (t - currentStep/steps);
+  //var riserAngle = R / (T + R) < tWithinStep*steps ? theta1 : 0;
+  //var accumulatedAngle = currentStep*(theta1 + theta2) + riserAngle;
+  ////
+  //////console.log(accumulatedAngle);
+  ////
+  ////
+  ////
+  //var x = tWithinStep * (steps * (T + R));
+  //
+  ////console.log(x);
+  //
+  //////console.log(x);
+  ////
+  //////console.log(-rad2deg(accumulatedAngle + (1 - log(y0 + m*x) / m)));
+  ////
+  //var c = -PI/2 + log(y0)/m;
+  ////console.log(c);
+  ////
+  ////return -rad2deg(-accumulatedAngle + (-c - log(y0 + m*x) / m));
+  //
+  //
+  //return -rad2deg(accumulatedAngle + (c - log(y0 + m*x) / m));
 }
 
 
@@ -57,16 +109,42 @@ function drawWheel(container) {
     .y(function (d, i) { return -polar2cart(r(angle(i)), angle(i)).y; })
     .interpolate('linear');
 
-  container
+  var petal = container
     .append('defs')
     .append('g')
-    .attr('id', 'petal')
+    .attr('id', 'petal');
+
+  petal
     .append('path')
     .datum(d3.range(points))
     .attr('d', petalGenerator)
     .attr('stroke', 'blue')
     .attr('stroke-width', 1)
     .attr('fill', 'none');
+
+  //petal
+  //  .append('circle')
+  //  .attr({
+  //    cx: 0,
+  //    cy: 0,
+  //    r: 2
+  //  })
+  //  .attr('stroke', 'blue')
+  //  .attr('stroke-width', 1)
+  //  .attr('fill', 'none');
+
+  petal
+    .append('line')
+    .attr({
+      x1: -100,
+      y1: -100,
+      x2: 100,
+      y2: 100
+    })
+    .attr('stroke', 'purple')
+    .attr('stroke-width', 1)
+    .attr('fill', 'none');
+
 
   var wheel =
     container.append('g')
@@ -78,7 +156,7 @@ function drawWheel(container) {
 
   wheel.transition()
     .attrTween('transform', tween)
-    .duration(10000)
+    .duration(100000)
     .ease('linear');
 
   function tween(d, i, a) {
@@ -87,9 +165,9 @@ function drawWheel(container) {
     return function(t) {
       var totalX = steps * sqrt(R*R+T*T);
       var totalAngle = 360 * (steps / N);
-
+     //t = 0.05;
       //return 'rotate(' + t*steps*(T+R) + ' ' + (t * totalX + Ox)  + ' ' + Oy + '), translate(' + (t * totalX + Ox)  + ',' + Oy + ')';
-      return 'translate(' + (t * totalX + Ox)  + ',' + Oy + '), rotate(' + (totalAngle * t) + ')';
+      return 'translate(' + (t * totalX + Ox)  + ',' + Oy + '), rotate(' + (theta(t)) + ')';
     };
 
     //var finalX = steps * T + Ox;
@@ -99,8 +177,8 @@ function drawWheel(container) {
   }
 
   var nodes = wheel.selectAll('g.petal')
-    .data(d3.range(1, N + 1))
-    //.data(d3.range(1, 2))
+    //.data(d3.range(1, N + 1))
+    .data(d3.range(1, 2))
     .enter()
     .append('g')
     .attr('transform', function(k) { var angle = 2*(k-1)*PI/N; return 'rotate(' + rad2deg(angle) + ')'; });
@@ -203,9 +281,9 @@ var svgContainer = d3.select('body')
 
 
 drawGrid(svgContainer);
-drawStairCase(svgContainer);
+
 
 drawWheel(svgContainer);
-
+drawStairCase(svgContainer);
 
 

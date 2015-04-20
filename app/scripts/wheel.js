@@ -8,14 +8,14 @@
 
 
   var points = 200, // Number of points to draw for each petal
-      T = 120,      // Staircase's tread (horizontal) length
-      R = 60,      // Staircase's riser (vertical) length
-      N = 1,       // Number of petals
-      steps = 10,  // Number of steps
-      Ox = 100,
-      Oy = 200;
+      T = 6,        // Staircase's tread (horizontal) length
+      R = 80,       // Staircase's riser (vertical) length
+      N = 7,        // Number of petals
+      steps = 10,   // Number of steps
+      Ox = 100,     // Initial Ccnter x
+      Oy = 200;     // Initial center y
 
-  // Negated slope of the riser
+  // Staircase slope
   var m = T/R;
 
   var mm1 = m*m + 1;
@@ -34,24 +34,33 @@
     }
   }
 
+
   function theta(t) {
-    var dist = t * steps * (T + R);
-    var currentStep = Math.floor(dist / (T + R));
+    // t goes from 0 to 1 for the whole staircase, but we want it to go from 0 
+    // to 1 just for this step.
+    var currentStep = Math.floor(t*steps);
+    t = t - currentStep/steps;
 
-    var currentStepDist = dist - currentStep * (T + R);
+    // Hypoteneuse of each step
+    var h = sqrt(T*T+R*R);
 
-      if (currentStepDist <= R) {
-        // Is still in the riser bit
-        var h = sqrt(T*T+R*R);
-        var Rx = h- T/sqrt(mm1);
-        var x = (currentStepDist/R)*Rx;   
-        var c = -log(y0)/m;
-        return rad2deg(c + log(y0 + m*x) / m);
+    // Length of the x component of the riser
+    var Rx = h - T*m/sqrt(mm1);
+
+    // Length of the x component of the tread
+    var Tx = h - Rx;
+
+    // Distance traveled in the x axis for this step
+    var x = t*h*steps;
+
+    if (x <= Rx) {
+      // Still in the riser
+       var c = -log(y0)/m;
+       return rad2deg(c + log(y0 + m*x) / m);
     } else {
-        var Tx = T/sqrt(mm1);
-        var x = (currentStepDist - R)/T*Tx;
-        var c = m*log(m*y0 + Tx) - PI/N;
-        return +rad2deg(c - log(m*y0 - (x-Tx)) * m);
+      x = x - Rx;    
+      var c = m*log(m*y0);
+      return rad2deg(c - log(m*y0 - (x-Tx)) * m);
     }
   }
 
@@ -98,7 +107,6 @@
         .attr('id', 'wheel')
         .attr('transform', 'translate(' + Ox + ', ' + Oy + ')');
 
-
     wheel.transition()
       .attrTween('transform', tween)
       .duration(10000)
@@ -106,7 +114,7 @@
 
     function tween(d, i, a) {
       return function(t) {
-        var totalX = steps * sqrt(R*R+T*T);
+        var totalX = steps * sqrt(R*R+T*T);      
         return 'translate(' + (t * totalX + Ox)  + ',' + Oy + '), rotate(' + (theta(t)) + ')';
       };
     }
@@ -129,11 +137,6 @@
       .x(function(d, i) { return T * Math.floor(i/2);  })
       .y(function(d, i) { return R * Math.ceil(i/2);  })
       .interpolate('linear');
-
-    //var stepGenerator = d3.svg.line()
-    //  .x(function(d, i) { return T * Math.ceil(i/2);  })
-    //  .y(function(d, i) { return R * Math.floor(i/2); })
-    //  .interpolate('linear');
 
     container
       .append('g')
@@ -193,31 +196,13 @@
       });
   }
 
-
-
-
-  //The SVG Container
   var svgContainer = d3.select('body')
     .append('svg');
 
 
-
-  //svgContainer
-  //  .append('line')
-  //  .attr({
-  //    x1: 0,
-  //    x2: 800,
-  //    y1: 400,
-  //    y2: 400,
-  //    'stroke-width': 1,
-  //    'stroke': 'black'
-  //  });
-
-
-  drawGrid(svgContainer);
-
-
+ // drawGrid(svgContainer);
   drawWheel(svgContainer);
   drawStairCase(svgContainer);
+
 
 

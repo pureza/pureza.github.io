@@ -26,6 +26,7 @@ var m,
 var points = 200, // Number of points to draw for each petal
   steps = 10, // Number of steps
   speed = 50,
+  drawHandrail = true,
   Ox, // Initial center x
   Oy; // Initial center y
 
@@ -251,15 +252,17 @@ function drawStairCase(world) {
       return 'rotate(' + -θ0 + ', 0, ' + y0 + '), translate(0, ' + y0 + ')';
     });
 
-  staircase
-    .append('line')
-    .attr({
-      x1: 0,
-      x2: h * steps,
-      y1: 0,
-      y2: 0,
-      stroke: 'black'
-    });
+  if (drawHandrail) {
+    staircase
+      .append('line')
+      .attr({
+        x1: 0,
+        x2: h * steps,
+        y1: 0,
+        y2: 0,
+        stroke: 'black'
+      });
+  }
 }
 
 
@@ -362,6 +365,13 @@ function initSliders() {
       speed = this.value;
       speedLabel.text(speed);
       animate(wheel);
+    });
+
+  d3.select("#checkHandrail")
+    .property('checked', drawHandrail ? 'checked' : '')
+    .on("change", function() {
+      drawHandrail = !drawHandrail;
+      draw(world);
     });
 }
 

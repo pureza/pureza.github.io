@@ -1,6 +1,6 @@
 html, body {
     width: 100%;
-    height: 600px;
+    height: 100%;
     margin: 0;
     padding: 0;
 }
@@ -9,4 +9,15 @@ html, body {
 svg {
     width: 100%;
     height: 100%;
+}
+
+#controls {
+    /*border: 1px solid black;*/
+    background-color: aliceblue;
+    padding: 20px;
+}
+
+#controls label {
+    /*width: 120px;*/
+    display: block;
 }

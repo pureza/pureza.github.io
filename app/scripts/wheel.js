@@ -1,15 +1,18 @@
 'use strict';
 
 // Main simulation parameters
-var T = 60, // Staircase tread (horizontal) length
-  R = 80, // Staircase riser (vertical) length
-  N = 5; // Number of petals
+var T = 20, // Staircase tread (horizontal) length
+  R = 30, // Staircase riser (vertical) length
+  N = 1; // Number of petals
 
+
+var wheel;
 
 // Auxiliar constants
 var m,
   mm1,
   y0,
+  θ0,
   θ1,
   θ2,
   h,
@@ -22,8 +25,9 @@ var m,
 // Auxiliar parameters
 var points = 200, // Number of points to draw for each petal
   steps = 10, // Number of steps
-  Ox = 100, // Initial center x
-  Oy = 200; // Initial center y
+  speed = 50,
+  Ox, // Initial center x
+  Oy; // Initial center y
 
 
 // Auxiliar math definitions
@@ -32,9 +36,6 @@ var π = Math.PI,
   log = Math.log,
   sqrt = Math.sqrt,
   floor = Math.floor;
-
-
-var svgContainer;
 
 
 /**
@@ -49,6 +50,10 @@ function computeConstants() {
 
   // Initial height of the wheel
   y0 = T / (sqrt(mm1) * (exp((2 * π * m) / ((mm1) * N)) - 1));
+
+  // Initial angle of rotation of the wheel, due to the inclination of the staircase
+  // (in the paper the staircase is horizontal)
+  θ0 = rad2deg(Math.atan(1 / m));
 
   // θ1 and θ2 angle definitions, as in the paper.
   θ1 = 1 / m * log(T / (y0 * sqrt(mm1)) + 1);
@@ -67,7 +72,9 @@ function computeConstants() {
   c1 = -log(y0) / m;
 
   // Integration constant of θ(t) in the tread
-  c2 = m * log(m * y0);  
+  c2 = m * log(m * y0);
+
+  Ox = Oy = r(-π / 2 + θ1);
 }
 
 
@@ -126,7 +133,7 @@ function rad2deg(θ) {
 }
 
 
-function drawWheel(container) {
+function drawWheel(world) {
   var angle = d3.scale.linear()
     .domain([0, points - 1])
     .range([-π / 2 - θ2, -π / 2 + θ1]);
@@ -140,7 +147,7 @@ function drawWheel(container) {
     })
     .interpolate('linear');
 
-  var petal = container
+  var petal = world
     .append('defs')
     .append('g')
     .attr('id', 'petal');
@@ -153,28 +160,24 @@ function drawWheel(container) {
     .attr('stroke-width', 1)
     .attr('fill', 'none');
 
-
-
-  var wheel =
-    container.append('g')
+  wheel =
+    world.append('g')
     .attr('id', 'wheel')
     .attr('transform', 'translate(' + Ox + ', ' + Oy + ')');
 
+  wheel.append('circle')
+    .attr({
+      cx: 0,
+      cy: 0,
+      r: 2,
+      stroke: 'blue',
+      'stroke-width': 1
+    });
 
-  wheel.transition()
-    .attrTween('transform', tween)
-    .duration(10000)
-    .ease('linear');
-
-  function tween(d, i, a) {
-    return function(t) {
-      var totalX = steps * h;
-      return 'translate(' + (t * totalX + Ox) + ',' + Oy + '), rotate(' + (θ(t)) + ')';
-    };
-  }
 
   var nodes = wheel.selectAll('g.petal')
     .data(d3.range(1, N + 1))
+    //.data(d3.range(1, 2))
     .enter()
     .append('g')
     .attr('transform', function(k) {
@@ -185,10 +188,41 @@ function drawWheel(container) {
   nodes
     .append('use')
     .attr('xlink:href', '#petal');
+
+  animate(wheel);
 }
 
 
-function drawStairCase(container) {
+function animate(wheel) {
+  wheel.transition()
+    .attrTween('transform', tween)
+    .duration((110 - speed) * 100)// When speed = 100, it takes 1 second
+    .ease('linear')
+    .transition()
+    .attrTween('transform', reverse(tween))
+    .duration((110 - speed) * 100)
+    .ease('linear')
+    .each('end', function() { animate(wheel); });
+
+  function tween(d, i, a) {
+    return function(t) {
+      var totalX = steps * h;
+      return 'translate(' + (t * totalX + Ox) + ',' + Oy + '), rotate(' + (θ(t)) + ')';
+    };
+  }
+
+  function reverse(f) {
+    var tween = f();
+    return function (d, i, a) {
+      return function (t) {
+        return tween(1 - t);
+      }
+    }
+  }
+}
+
+
+function drawStairCase(world) {
 
   var stepGenerator = d3.svg.line()
     .x(function(d, i) {
@@ -199,104 +233,143 @@ function drawStairCase(container) {
     })
     .interpolate('linear');
 
-  container
+  var staircase = world
     .append('g')
     .attr('id', 'staircase')
+    .attr('transform', function() {
+      return 'translate(' + (Ox) + ', ' + Oy + ')'
+    });
+
+  staircase
     .append('path')
     .datum(d3.range(steps * 2 + 1))
     .attr('d', stepGenerator)
-    .attr('stroke', 'red')
+    .attr('stroke', 'black')
     .attr('stroke-width', 1)
     .attr('fill', 'none')
     .attr('transform', function() {
-      var h = Math.sin(θ2) * T,
-        w = -Math.cos(θ2) * T,
-        startX = Ox,
-        startY = Oy + y0,
-        angle = -rad2deg(Math.atan(1 / m));
-
-      return 'rotate(' + angle + ' ' + startX + ', ' + startY + '), translate(' + startX + ', ' + startY + ')'
+      return 'rotate(' + -θ0 + ', 0, ' + y0 + '), translate(0, ' + y0 + ')';
     });
-}
 
-
-
-function drawGrid(container) {
-  var grid = container
-    .append('g')
-    .attr('id', 'grid');
-
-  grid.selectAll('line.horizontal')
-    .data(d3.range(100))
-    .enter()
+  staircase
     .append('line')
     .attr({
       x1: 0,
-      x2: '100%',
-      y1: function(d) {
-        return d * 10
-      },
-      y2: function(d) {
-        return d * 10
-      },
-      stroke: 'whitesmoke',
-      'stroke-width': function(d) {
-        return (d % 10 == 0 ? 2 : 1)
-      },
-      fill: 'none',
-      class: 'horizontal'
-    });
-
-  grid.selectAll('line.vertical')
-    .data(d3.range(100))
-    .enter()
-    .append('line')
-    .attr({
-      x1: function(d) {
-        return d * 10
-      },
-      x2: function(d) {
-        return d * 10
-      },
+      x2: h * steps,
       y1: 0,
-      y2: '100%',
-      stroke: 'whitesmoke',
-      'stroke-width': function(d) {
-        return (d % 10 == 0 ? 2 : 1)
-      },
-      fill: 'none',
-      class: 'horizontal'
+      y2: 0,
+      stroke: 'black'
     });
 }
 
 
-function draw() {
-  svgContainer.selectAll('*').remove();
+//
+//function drawGrid(world) {
+//  var grid = world
+//    .append('g')
+//    .attr('id', 'grid');
+//
+//  grid.selectAll('line.horizontal')
+//    .data(d3.range(100))
+//    .enter()
+//    .append('line')
+//    .attr({
+//      x1: 0,
+//      x2: '100%',
+//      y1: function(d) {
+//        return d * 10
+//      },
+//      y2: function(d) {
+//        return d * 10
+//      },
+//      stroke: 'whitesmoke',
+//      'stroke-width': function(d) {
+//        return (d % 10 == 0 ? 2 : 1)
+//      },
+//      fill: 'none',
+//      class: 'horizontal'
+//    });
+//
+//  grid.selectAll('line.vertical')
+//    .data(d3.range(100))
+//    .enter()
+//    .append('line')
+//    .attr({
+//      x1: function(d) {
+//        return d * 10
+//      },
+//      x2: function(d) {
+//        return d * 10
+//      },
+//      y1: 0,
+//      y2: '100%',
+//      stroke: 'whitesmoke',
+//      'stroke-width': function(d) {
+//        return (d % 10 == 0 ? 2 : 1)
+//      },
+//      fill: 'none',
+//      class: 'horizontal'
+//    });
+//}
+
+
+function draw(world) {
+  world.selectAll('*').remove();
 
   computeConstants();
-  drawWheel(svgContainer);
-  drawStairCase(svgContainer);
+
+  // Rotate the world so that the staircase looks normal
+  world.attr('transform', 'rotate(' + θ0 + ', ' + Ox + ', ' + (Oy + y0) + ')');
+
+  drawWheel(world);
+  drawStairCase(world);
 }
 
 
-var svgContainer = d3.select('body')
-  .append('svg');
+function initSliders() {
+  var nLabel = d3.select('#N').text(N);
+  var tLabel = d3.select('#T').text(T);
+  var rLabel = d3.select('#R').text(R);
+  var speedLabel = d3.select('#speed').text(speed);
+
+    d3.select("#rangeN")
+    .property('value', N)
+    .on("input", function() {
+      N = this.value;
+      nLabel.text(N);
+      draw(world);
+    });
+
+  d3.select("#rangeT")
+    .property('value', T)
+    .on("input", function() {
+      T = this.value;
+      tLabel.text(T);
+      draw(world);
+    });
+
+  d3.select("#rangeR")
+    .property('value', R)
+    .on("input", function() {
+      R = this.value;
+      rLabel.text(R);
+      draw(world);
+    });
+
+  d3.select("#rangeSpeed")
+    .property('value', speed)
+    .on("input", function() {
+      speed = this.value;
+      speedLabel.text(speed);
+      animate(wheel);
+    });
+}
 
 
-d3.select("#rangeN").on("input", function() {
-  N = this.value;
-  draw();
-});
+var world = d3.select('#world');
 
-d3.select("#rangeT").on("input", function() {
-  T = this.value;
-  draw();
-});
-
-d3.select("#rangeR").on("input", function() {
-  R = this.value;
-  draw();
-});
+initSliders();
 
 
-draw();
+
+draw(world);

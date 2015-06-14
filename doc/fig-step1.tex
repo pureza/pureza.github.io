@@ -1,0 +1,44 @@
+\begin{tikzpicture}[scale=0.03]
+\tkzInit[ymin=-68,ymax=30,xmin=-80,xmax=40]
+
+% Axis
+\draw [->] (0,-68) -- (0,30) node[anchor=north east] {$y$};
+\draw [->] (-180,0) -- (140,0) node[anchor=north east] {$x$};
+
+% T=80, R=60, y0=-20
+% x1=-64, x2=36
+% The triangle's height is 48
+\tkzDefPoint(-64,-68){A}
+\tkzDefPoint(36,-68){B}
+\tkzDefPoint(0,-20){C}
+\tkzDrawLine[add=0 and 0, color=blue](A,C)
+\tkzDrawLine[add=0 and 0, color=blue](C,B)
+
+\tkzMarkRightAngle[size=4](B,C,A)
+
+% T and R labels
+\tkzLabelSegment[anchor=south east](A,C){$T$}
+\tkzLabelSegment[anchor=south west](B,C){$R$}
+
+% y0
+\node at (0,-20) [right] {$-y_0$};
+ 
+% x1 and x2
+\draw [|-|, domain=-64:0] plot (\x, {-(20+48+6)});
+\draw [-|, domain=0:36] plot (\x, {-(20+48+6)});
+
+\node at (-32,-79) {$-x_1$};
+\node at (18,-79) {$x_2$};
+
+\tkzDefPoint(-100,-20){D}
+\tkzDefPoint(-164,-68){E}
+\tkzDrawLine[add=0 and 0, color=blue, dotted](A,D)
+\tkzDrawLine[add=0 and 0, color=blue, dotted](E,D)
+
+\tkzDefPoint(100,-20){F}
+\tkzDefPoint(136,-68){G}
+\tkzDrawLine[add=0 and 0, color=blue, dotted](B,F)
+\tkzDrawLine[add=0 and 0, color=blue, dotted](F,G)
+
+\end{tikzpicture}
+

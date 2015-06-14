@@ -1,0 +1,38 @@
+\begin{tikzpicture}[scale=0.7]
+
+% Draw the spiral
+\draw [blue, domain=0:1320, samples=200] plot ({1/10*exp(\x/360)*cos(\x)}, {1/10*exp(\x/360)*sin(\x)});
+
+% WolframAlpha
+% (1/10*exp(x/(2pi))*cos(x)+t, 1/10*exp(x/(2pi))*sin(x)+t*(sin(x)/((2pi))+cos(x))/(cos(x)/((2pi))-sin(x))) with x=pi/4+4pi, t=-5
+
+\tkzDefPoint(0, 0){O}
+
+% First tangent
+\tkzDefPoint(0.09205325920345975, 1.2813330103113851){A1}
+\tkzDefPoint(0.5920532592034597, 0.5920532592034602){A0}
+\tkzDefPoint(1.0920532592034597, -0.09722649190446464){A2}
+\tkzDrawLine[add=0 and 0](A1,A2)
+\tkzDrawLine[add=0 and 0](O,A0)
+\tkzMarkAngle[size=0.2](O,A0,A2)
+\tkzLabelAngle[pos=0.4](O,A0,A2) {$\phi$}
+
+% Second tangent
+\tkzDefPoint(-1.9015812447263079, 2.2361089354271666){B1}
+\tkzDefPoint(-1.4015812447263079, 2.427609926801592){B0}
+\tkzDefPoint(-0.9015812447263079, 2.619110918176017){B2}
+\tkzDrawLine[add=0.2 and 0.2](B1,B2)
+\tkzDrawLine[add=0 and 0](O,B0)
+\tkzMarkAngle[size=0.2](O,B0,B2)
+\tkzLabelAngle[pos=0.4](O,B0,B2) {$\phi$}
+
+% Third tangent
+\tkzDefPoint(-3.4171128478167136, -1.0163801795332246){C1}
+\tkzDefPoint(-3.117112847816714, -1.7996659417814145){C0}
+\tkzDefPoint(-2.817112847816714, -2.5829517040296044){C2}
+\tkzDrawLine[add=0 and 0](C1,C2)
+\tkzDrawLine[add=0 and 0](O,C0)
+\tkzMarkAngle[size=0.2](O,C0,C1)
+\tkzLabelAngle[pos=0.4](O,C0,C1) {$\phi$}
+
+\end{tikzpicture}

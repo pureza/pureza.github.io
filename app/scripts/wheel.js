@@ -1,10 +1,10 @@
 'use strict';
 
 // Main simulation parameters
-var T = 40, // Staircase tread (horizontal) length
-  R = 20, // Staircase riser (vertical) length
-  N1 = 5, // Number of petals on the first wheel
-  N2 = 1, // Number of petals on the second wheel
+var T = 36, // Staircase tread (horizontal) length
+  R = 18, // Staircase riser (vertical) length
+  N1 = 4, // Number of petals on the first wheel
+  N2 = 2, // Number of petals on the second wheel
   speed = 50, // Simulation speed (1-100)
   drawHandrail = true,
   showSecondWheel = false;
@@ -15,7 +15,7 @@ var POINTS = 30, // Number of points to draw for each petal
   STEPS = 10, // Number of steps
   Ox, // Initial center x
   Oy, // Initial center y
-  m, mm1, θ0, h, Rx, Tx, maxY0;
+  m, mm1, θ0, h, x1, x2, maxY0;
 
 
 var world, // The world (SVG element containing the staircase and wheels)
@@ -53,23 +53,23 @@ function rad2deg(θ) {
 
 
 function init() {
-  // Inverse of the staircase slope
-  m = T / R;
+  // Staircase slope
+  m = R / T;
 
   mm1 = m * m + 1;
 
-  // Initial angle of rotation of the wheel, due to the inclination of the staircase
-  // (in the paper the staircase is horizontal)
-  θ0 = rad2deg(Math.atan(1 / m));
+  // Initial angle of rotation of the wheel, due to the inclination of the
+  // staircase (in the paper the staircase is horizontal)
+  θ0 = rad2deg(Math.atan(m));
 
   // Hypoteneuse of each step
   h = sqrt(T * T + R * R);
+ 
+  // Length of the x component of the tread (this is -x1 in the paper)
+  x1 = 1/sqrt(mm1) * T;
 
   // Length of the x component of the riser
-  Rx = h - T * m / sqrt(mm1);
-
-  // Length of the x component of the tread
-  Tx = h - Rx;
+  x2 = h - x1;
 
   // The first wheel
   w1 = wheel(T, R, N1, 0, showSecondWheel ? 8 : 10, 'blue');
@@ -81,33 +81,30 @@ function init() {
 
   maxY0 = showSecondWheel ? max(w1.y0, w2.y0) : w1.y0;
 
-  Ox = Oy = showSecondWheel ? max(w1.r(-π / 2 + w1.θ1), w2.r(-π / 2 + w2.θ1)) : w1.r(-π / 2 + w1.θ1);
+  Ox = Oy = showSecondWheel ? max(w1.r(-π / 2 - w1.θ1), w2.r(-π / 2 - w2.θ1)) 
+                            : w1.r(-π / 2 - w1.θ1);
 }
 
 
 var wheel = function(T, R, N, initialStep, lastStep, color) {
 
   // Initial height of the wheel
-  var y0 = y0 = T / (sqrt(mm1) * (exp((2 * π * m) / ((mm1) * N)) - 1)),
+  var y0 = R / (sqrt(mm1) * (exp((2 * π * m) / (mm1 * N)) - 1)),
 
     // θ1 and θ2 angle definitions, as in the paper.
-    θ1 = 1 / m * log(T / (y0 * sqrt(mm1)) + 1),
-    θ2 = m * log(T / (y0 * sqrt(mm1)) + 1),
-
-    // Integration constant of θ(t) in the riser
-    c1 = -log(y0) / m,
-
-    // Integration constant of θ(t) in the tread
-    c2 = m * log(m * y0);
+    θ1 = 1 / m * log(R / (y0 * sqrt(mm1)) + 1),
+    θ2 = m * log(R / (y0 * sqrt(mm1)) + 1);
 
   /**
    * Calculates the radius of the wheel at angle θ
    */
   function r(θ) {
-    if (θ >= -π / 2 && θ <= -π / 2 + θ1) {
-      return y0 * exp(m * (θ + π / 2));
+    if (θ >= -π/2 - θ1 && θ <= -π/2) {
+      // r1(θ)
+      return y0 * exp(-m * (θ + π/2));
     } else {
-      return y0 * exp(-1 / m * (θ + π / 2));
+      // r2(θ)  
+      return y0 * exp(1/m * (θ + π/2));
     }
   }
 
@@ -124,12 +121,15 @@ var wheel = function(T, R, N, initialStep, lastStep, color) {
     // Distance traveled in the x axis for this step
     var x = t * h * STEPS;
 
-    if (x <= Rx) {
+    // Unlike the paper, the stair begins with a riser. The formulas are the
+    // same though.
+    if (x <= x2) {
       // Still in the riser
-      return rad2deg(c1 + log(y0 + m * x) / m);
+      return rad2deg(m*log(1 + x/(m*y0)));
     } else {
-      x = x - Rx;
-      return rad2deg(c2 - log(m * y0 - (x - Tx)) * m);
+      // make x belong to [-x1, 0]
+      x = x - x2 - x1;
+      return rad2deg(-log(1-m/y0*x) / m);
     }
   }
 
@@ -181,7 +181,7 @@ var wheel = function(T, R, N, initialStep, lastStep, color) {
     draw: function (world) {
       var angle = d3.scale.linear()
         .domain([0, POINTS - 1])
-        .range([-π / 2 - θ2, -π / 2 + θ1]);
+        .range([-π / 2 - θ1, -π / 2 + θ2]);
 
       var petalGenerator = d3.svg.line()
         .x(function (d, i) {
@@ -205,6 +205,7 @@ var wheel = function(T, R, N, initialStep, lastStep, color) {
         .attr('d', petalGenerator)
         .attr('stroke', color)
         .attr('stroke-width', 1)
+        .attr('shape-renedring', 'crispEdges')
         .attr('fill', 'none');
 
       // Translate the wheel to its initial position
@@ -261,7 +262,7 @@ function drawStairCase(world) {
     .append('g')
     .attr('id', 'staircase')
     .attr('transform', function() {
-      return 'translate(' + (Ox) + ', ' + Oy + ')'
+      return 'translate(' + Ox + ', ' + Oy + ')'
     });
 
   staircase

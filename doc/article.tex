@@ -9,12 +9,8 @@
 \usepackage{url}
 \usepackage{subcaption}
 
-
 \usepackage{pgf,tikz}
 \usepackage{tkz-euclide}
-%\usepackage{pgfplots}
-%\usetikzlibrary{arrows}
-%\usetikzlibrary{positioning}
 \usetkzobj{all}
 
 \theoremstyle{theorem}
@@ -25,29 +21,65 @@
 
 \newtheorem{remark}{Remark}[section]
 
-\newtheorem{example}{Example}[section]
-
-
 \begin{document}
 
-\title{Wheels for staircases} \date{}
+\title{Reinventing the wheel: designing wheels for staircases} \date{}
+\author{
+  Luís Pureza
+}
 \maketitle
 
 \section{Introduction}
 
-TODO
+It is a well known fact that circular wheels are well suited to roll
+over flat surfaces. Explaining why this is so is another matter, and
+there is certainly a lot to find out if one starts investigating the
+physics of motion in detail. There is, however, one convincing
+argument that is simple to understand and doesn't require any physics:
+if the wheel spins around an axle, a vehicle mounted on top of this
+axle will always be at the same height from the road. Thus, if the
+road is (approximately) flat, the vehicle will follow a straight line,
+free of bumps and depressions. In a word, the journey could be
+described as smooth.
 
-% Change title
+Unfortunately, staircases are not flat and climbing or descending them
+on circular wheels is anything but a smooth experience. This leads us
+to wonder whether it would be possible to design wheels specialized
+to roll over staircases while providing a comfortable ride. These
+wheels could potentially be mounted on wheelchairs to help disabled
+people, or used in small transportation vehicles in places where lifts
+or ramps are unavailable.
+
+In this document we propose to study the shape of wheels for
+staircases. Perhaps surprisingly, we will find out that there is, for each staircase, an
+infinite number of wheels matching our criteria for comfort and
+smoothness, and we will develop an algorithm to design them all. Our
+work follows from that of Hall and Wagon \cite{hall-wagon}, who
+focused on the more general problem of designing wheels for roads of
+arbitrary shape. They haven't, however, investigated in detail the
+particular case of roads shaped like staircases.
+
+The rest of this document is organised as follows. In section
+\ref{sec:model} we express the problem of pairing roads and wheels
+mathematically and derive a model to solve it. We then apply this
+model, first in section \ref{sec:linear-roads} for the simpler case of
+straight roads and then for staircases in section
+\ref{sec:staircases}. This leads us to section \ref{sec:algorithm},
+where we systematize all our findings and describe an algorithm to
+build wheels for staircases, step by step. Then, in section
+\ref{sec:proof-of-concept} we present a simulator that implements this
+algorithm and is available online. Finally, we conclude with some
+remarks regarding the feasibility of using these wheels in the real
+world.
+
 \section{Pairing roads and wheels }
 \label{sec:model}
 
-It is a well-known fact that circular wheels are suited to roll over
-flat roads. Is it possible to find a wheel seemingly suitable to roll
-over a staircase, or any other surface? This question was posed by
-Hall and Wagon in \cite{hall-wagon}, where they proved the equivalence
-to a certain initial value problem. We begin by describing the
-mathematical model they developed before applying it to the particular
-case of staircases in subsequent sections.
+The question of designing wheels for arbitrary roads was posed by Hall
+and Wagon in \cite{hall-wagon}, where they proved the equivalence to a
+certain initial value problem. We begin by describing the mathematical
+model they developed before applying it to the particular case of
+staircases in subsequent sections.
 
 Let us define a road as a two-dimensional curve given in parametric
 coordinates
@@ -68,7 +100,7 @@ $t$. Similarly, a wheel is a curve in polar form
 $(r(\theta(t)), \theta(t))$ represents the point on the border of the
 wheel that will be in contact with the road after rolling for a time
 $t$. Without loss of generality, we may assume the wheel starts
-centered at the origin and the initial point of contact with the road
+centred at the origin and the initial point of contact with the road
 occurs right beneath it, that is,
 
 \begin{equation}
@@ -77,11 +109,11 @@ occurs right beneath it, that is,
 
 In order to be smooth, we require the motion to obbey the following constraints:\\
 
-\noindent \textbf{No-bouncing} means the center of the wheel must
+\noindent \textbf{No-bouncing} means the centre of the wheel must
 travel along a linear path, without bumps or breaks. To simplify
 calculations, we will presume this path is just the horizontal
 axis. Consequently, the road is always below $y=0$ and the distance
-between the center of the wheel and the point of contact with the road
+between the centre of the wheel and the point of contact with the road
 equals the height of the road. That is,
 
 \begin{equation}
@@ -90,9 +122,9 @@ equals the height of the road. That is,
 \end{equation}
 
 \noindent \textbf{No-sliding} forces the wheel to roll over the road
-without sliding. This means that the arc-length between two points on
+without sliding. This means that the arc length between two points on
 the wheel that touch the road at two different times must be the same
-as the corresponding arc-length on the road. Mathematically, this is
+as the corresponding arc length on the road. Mathematically, this is
 expressed as:
 
 \begin{equation}
@@ -140,8 +172,8 @@ the motion.
 
 \begin{remark}
   If the road is given by a cartesian equation $y=f(x)$, we can
-  parametrize it by $x(t)=t$, $y(t)=f(t)$ and the initial
-  value problem reduces to
+  parametrize it by $x(t)=t$, $y(t)=f(t)$ and the initial value
+  problem reduces to
 
   \begin{equation}
     \label{eq:ivp}
@@ -153,38 +185,38 @@ the motion.
 % TODO: Confirm the penetration bit
 
 \section{Wheels for straight roads}
+\label{sec:linear-roads}
 
 As a simple application of the model described above, let's confirm
 our intuitive guess that circular wheels are perfect for flat roads.
 \\
 
 \noindent \textbf{The trivial example.} If the road is $y(x)=-y_0 $
-where $y_0>0$ is constant, then the wheel is a circle of radius $y_0$.  
+where $y_0>0$ is constant, then the wheel is a circle of radius $y_0$.
 
 \begin{proof}
   It is a direct consequence of the no-bouncing condition
   (\ref{eq:no-bouncing}).
 
-Let's confirm that this wheel does not slide. The distance travelled on the road
- after time $t$ is
+  Let's confirm that this wheel does not slide. The distance travelled
+  on the road after time $t$ is
 
  \begin{equation*}
-  \int_0^t{\sqrt{\left(\frac{dx}{dt}\right)^2+\left(\frac{dy}{dt}\right)^2}}
-  dt =
-  \int_0^t{dt} = t
+   \int_0^t{\sqrt{\left(\frac{dx}{dt}\right)^2+\left(\frac{dy}{dt}\right)^2}}
+   dt =
+   \int_0^t{dt} = t
  \end{equation*}
-The initial
- value problem (\ref{eq:ivp}) gives
+ The initial value problem (\ref{eq:ivp}) gives
  $\theta(t)=\frac{1}{y_0}t-\frac{\pi}{2}$. Inverting we get
  $t(\theta)=\left(\theta+\pi/2\right)y_0$. But this is just the arc
- length of a circle of radius $y_0$ between angles $\theta(0)=-\pi/2$ and
- $\theta(t)=\theta$, i.e., the distance covered by the wheel's border during
- the same amount of time $t$. Thus, this wheel obeys the
+ length of a circle of radius $y_0$ between angles $\theta(0)=-\pi/2$
+ and $\theta(t)=\theta$, i.e., the distance covered by the wheel's
+ border during the same amount of time $t$. Thus, this wheel obeys the
  no-sliding condition.
 \end{proof}
 
 The wheel becomes more complicated when the road has a slope. This is
-because we force the center of the wheel to move along the horizontal
+because we force the centre of the wheel to move along the horizontal
 axis, so its radius grows to infinity.
 
 \begin{prop}
@@ -215,24 +247,23 @@ which is the desired equation.
 \end{proof}
 
 \begin{remark}
-  This wheel in Proposition \ref{spiral-wheel} is not closed, because the
-  radius grows exponentially.
+  This wheel in Proposition \ref{spiral-wheel} is not closed, because
+  the radius grows exponentially.
 \end{remark}
 
-The wheel above is a Bernoulli or logarithmic spiral, whose general equation
-in polar coordinates is $r(\theta)=ae^{b\theta}$, where
-$a$ and $b$ are positive constants (the case $b=0$ degenerates into a circle). Bernoulli
-spirals are equiangular, meaning that, at all points, the angle
-between the radial and tangent lines remains constant (see Figure
-\ref{fig:spiral}). This remarkable
-property is so important for the remainder of our work that it merits
-its own proposition and proof.
+The wheel above is a Bernoulli or logarithmic spiral, whose general
+equation in polar coordinates is $r(\theta)=ae^{b\theta}$, where $a$
+and $b$ are positive constants (the case $b=0$ degenerates into a
+circle). Bernoulli spirals are equiangular, meaning that, at all
+points, the angle between the radial and tangent lines remains
+constant (see Figure \ref{fig:spiral}). This remarkable property is so
+important for the remainder of our work that it merits its own
+proposition and proof.
 
 \begin{figure}
-\centering
-\input{fig-spiral.tex}
-\caption{Bernoulli spirals are equiangular}
-\label{fig:spiral}
+  \centering \input{fig-spiral.tex}
+  \caption{Bernoulli spirals are equiangular}
+  \label{fig:spiral}
 \end{figure}
 
 
@@ -259,12 +290,13 @@ allows us to find the derivative at $\left(x(\theta),
 
 \begin{equation}
   \frac{dy}{dx}
-=\frac{\frac{dy}{d\theta}}{\frac{dx}{d\theta}}
-=\frac{r'(\theta)\sin\theta+r(\theta)\cos\theta}{r'(\theta)\cos\theta-r(\theta)\sin\theta}
-=\frac{b\sin\theta+\cos\theta}{b\cos\theta-\sin\theta}
+  =\frac{\frac{dy}{d\theta}}{\frac{dx}{d\theta}}
+  =\frac{r'(\theta)\sin\theta+r(\theta)\cos\theta}{r'(\theta)\cos\theta-r(\theta)\sin\theta}
+  =\frac{b\sin\theta+\cos\theta}{b\cos\theta-\sin\theta}
 \end{equation}
-where the last equality stems from the fact that $r'(\theta)=b r(\theta)$.
-Hence, the tangent vector at every point $\left(x(\theta),y(\theta)\right)$ is
+where the last equality stems from the fact that $r'(\theta)=b
+r(\theta)$.  Hence, the tangent vector at every point
+$\left(x(\theta),y(\theta)\right)$ is
 
 \begin{equation}
   \vec{T}=\left(1, \frac{b\sin\theta+\cos\theta}{b\cos\theta-\sin\theta}\right)
@@ -283,12 +315,12 @@ tangent vectors is just
   =\frac{\left(\hat{r}\times\vec{T}\right)_z/\|\vec{T}\|}{\left(\hat{r}\cdot\vec{T}\right)/\|\vec{T}\|}
   =\frac{1}{b}
 \end{equation}
-$\left(\hat{r}\times\vec{T}\right)_z$ denotes the third component
-of the cross product between $\hat{r}$ and $\vec{T}$ (extended into
+$\left(\hat{r}\times\vec{T}\right)_z$ denotes the third component of
+the cross product between $\hat{r}$ and $\vec{T}$ (extended into
 $\mathbb{R}^3$ by setting $\hat{r}_z=\vec{T}_z=0$).
 
-Finally, we see that $\tan\alpha$ is constant and thus $\alpha$ must be
-constant as well.
+Finally, we see that $\tan\alpha$ is constant and thus $\alpha$ must
+be constant as well.
 
 \end{proof}
 
@@ -296,6 +328,7 @@ We shall now study what happens when the road is shaped like a
 staircase.
 
 \section{Finding a wheel for a staircase}
+\label{sec:staircases}
 
 \subsection{The first step}
 
@@ -308,10 +341,9 @@ consider first the case of a staircase composed of a single step with
 tread width $T$ and riser height $R$, as in Figure \ref{fig:step}.
 
 \begin{figure}[h]
-\centering
-\input{fig-step1.tex}
-\caption{One step of the staircase}
-\label{fig:step}
+  \centering \input{fig-step1.tex}
+  \caption{One step of the staircase}
+  \label{fig:step}
 \end{figure}
 
 The equation of such a road is
@@ -329,12 +361,13 @@ The equation of such a road is
 where $x_1<0$, $x_2>0$ and both $m$ and $y_0$ are positive constants.
 
 It is not difficult to check that both line segments are perpendicular
-to each other and that $y(x)$ is continuous at $x=0$. Moreover, a simple application of the Pythagorean theorem
-shows that $m=R/T$, the slope of the staircase.
+to each other and that $y(x)$ is continuous at $x=0$. Moreover, a
+simple application of the Pythagorean theorem shows that $m=R/T$, the
+slope of the staircase.
 
 To find a wheel for this road, we will apply Proposition
-\ref{spiral-wheel} to
-both branches of $y(x)$. This gives the polar curve
+\ref{spiral-wheel} to both branches of $y(x)$. This gives the polar
+curve
 
 \begin{equation}
   \label{eq:petal}
@@ -348,22 +381,21 @@ both branches of $y(x)$. This gives the polar curve
 \end{equation}
 for some unknown $\theta_1$ and $\theta_2$.
 
-We see that this curve is made up of
-two pieces of Bernoulli spirals glued together. Because the spiral
-$r_1$ is tangent to $y_1$ at $x=0$ and $r_2$ is tangent to $y_2$ at
-the same location, we conclude that both spirals intersect at an angle
-of $\pi/2$ and the curve fits the road at the edge of the step (see
-Figure \ref{fig:petal}). Hence,
+We see that this curve is made up of two pieces of Bernoulli spirals
+glued together. Because the spiral $r_1$ is tangent to $y_1$ at $x=0$
+and $r_2$ is tangent to $y_2$ at the same location, we conclude that
+both spirals intersect at an angle of $\pi/2$ and the curve fits the
+road at the edge of the step (see Figure \ref{fig:petal}). Hence,
 $r(\theta)$ is the wheel we were looking for.
 
 \begin{figure}[h]
-\centering
-\input{fig-petal1.tex}
-\caption{The wheel for the first step}
-\label{fig:petal}
+  \centering \input{fig-petal1.tex}
+  \caption{The wheel for the first step}
+  \label{fig:petal}
 \end{figure}
 
-To find the angles $\theta_1$ and $\theta_2$ we can apply the no-sliding constraint (\ref{eq:no-sliding}), which reduces to
+To find the angles $\theta_1$ and $\theta_2$ we can apply the
+no-sliding constraint (\ref{eq:no-sliding}), which reduces to
 
 \begin{equation}
   \begin{array}{c}
@@ -423,19 +455,20 @@ road. Coincidentally, this is the case.
 \end{prop}
 
 \begin{proof}
-For this proof, we will refer to Figure \ref{fig:complete-wheel}. All
-the angles labeled $\alpha$ in this figure are congruent, due to the equiangular property of Bernoulli spirals proved
-  in Proposition \ref{prop:equiangular}, and the same holds for the
-  angles labeled $\beta$. But we already showed above that the two
-  spirals that make up one petal intersect each other perpendiculary. Thus,
-  $\alpha+\beta=\pi/2$, which concludes the proof.
+  For this proof, we will refer to Figure
+  \ref{fig:complete-wheel}. All the angles labelled $\alpha$ in this
+  figure are congruent, due to the equiangular property of Bernoulli
+  spirals proved in Proposition \ref{prop:equiangular}, and the same
+  holds for the angles labelled $\beta$. But we already showed above
+  that the two spirals that make up one petal intersect each other
+  perpendicularly. Thus, $\alpha+\beta=\pi/2$, which concludes the
+  proof.
 \end{proof}
 
 \begin{figure}[h]
-\centering
-\input{fig-complete-wheel.tex}
-\caption{Two petals meet at an angle of $\pi/2$}
-\label{fig:complete-wheel}
+  \centering \input{fig-complete-wheel.tex}
+  \caption{Two petals meet at an angle of $\pi/2$}
+  \label{fig:complete-wheel}
 \end{figure}
 
 
@@ -472,67 +505,69 @@ make this happen by varying the height of the wheel.
               m}{N(1+m^2)}}-1\right)}
     \end{array}
   \end{equation}
-The converse follows in the opposite direction.
+  The converse follows in the opposite direction.
 \end{proof}
 
 The proposition above allows us to conclude that, by varying the
-height of the (imaginary) handrail where the center of the wheel
+height of the (imaginary) handrail where the centre of the wheel
 passes, we can build a closed wheel with any number of petals. We have
 just proved the following theorem:
 
 \begin{thm}
-For every staircase, there is an infinite number of wheels, each with
-a different number of petals.
+  For every staircase, there is an infinite number of wheels, each
+  with a different number of petals.
 \end{thm}
 
 \begin{figure}[h]
-\centering
-\begin{subfigure}[t]{.45\textwidth}
   \centering
-  \input{fig-wheel3.tex}
-  \caption{A wheel with 3 petals}
-  \label{fig:wheel4}
-\end{subfigure}
-\begin{subfigure}[t]{.45\textwidth}
-  \centering
-  \input{fig-wheel5.tex}
-  \caption{A wheel with 5 petals}
-  \label{fig:wheel5}
-\end{subfigure}
-\caption{Two wheels of different sizes for the same staircase}
-\label{fig:wheels}
+  \begin{subfigure}[t]{.45\textwidth}
+    \centering \input{fig-wheel3.tex}
+    \caption{A wheel with 3 petals}
+    \label{fig:wheel4}
+  \end{subfigure}
+  \begin{subfigure}[t]{.45\textwidth}
+    \centering \input{fig-wheel5.tex}
+    \caption{A wheel with 5 petals}
+    \label{fig:wheel5}
+  \end{subfigure}
+  \caption{Two wheels of different sizes for the same staircase}
+  \label{fig:wheels}
 \end{figure}
 
 \section{An algorithm to build a wheel}
+\label{sec:algorithm}
 
 Suppose we are given a staircase with tread width $T$ and riser height
-$R$. We can build a wheel for it made up of $N$ petals with the following procedure:
+$R$. We can build a wheel for it made up of $N$ petals with the
+following procedure:
 
 \vspace*{0.15 cm}
 \noindent \emph{\textbf{Step 1}} Find $m$, which is just the slope of
 the staircase given by $R/T$.
 
 \vspace*{0.15 cm}
-\noindent \emph{\textbf{Step 2}} Compute $y_0$ according to (\ref{eq:y0}):
+\noindent \emph{\textbf{Step 2}} Compute $y_0$ according to
+(\ref{eq:y0}):
 
   \begin{equation}
     y_0=\frac{R}{\sqrt{1+m^2}\left(e^{\frac{2\pi m}{N(1+m^2)}}-1\right)}
   \end{equation}
 
-\vspace*{0.15 cm}
-\noindent \emph{\textbf{Step 3}} Determine the angles $\theta_1$ and
-$\theta_2$ given by (\ref{eq:thetas}), i.e.,
-\begin{equation}
-  \begin{array}{c}
-    \displaystyle
-    \theta_1=\frac{1}{m}\ln\left(\frac{R}{y_0\sqrt{1+m^2}}+1\right) \\
-    \\
-    \displaystyle \theta_2=m\ln\left(\frac{R}{y_0\sqrt{1+m^2}}+1\right)
-  \end{array}
-\end{equation}
+  \vspace*{0.15 cm}
+  \noindent \emph{\textbf{Step 3}} Determine the angles $\theta_1$ and
+  $\theta_2$ given by (\ref{eq:thetas}), i.e.,
+  \begin{equation}
+    \begin{array}{c}
+      \displaystyle
+      \theta_1=\frac{1}{m}\ln\left(\frac{R}{y_0\sqrt{1+m^2}}+1\right) \\
+      \\
+      \displaystyle \theta_2=m\ln\left(\frac{R}{y_0\sqrt{1+m^2}}+1\right)
+    \end{array}
+  \end{equation}
 
-\noindent \emph{\textbf{Step 4}} Build the first petal, that rolls
-over the first step, using the polar equation (\ref{eq:petal}), that is,
+  \noindent \emph{\textbf{Step 4}} Build the first petal, that rolls
+  over the first step, using the polar equation (\ref{eq:petal}), that
+  is,
 
 \begin{equation}
   r(\theta)=
@@ -544,9 +579,9 @@ over the first step, using the polar equation (\ref{eq:petal}), that is,
   \right. \quad
 \end{equation}
 
-\noindent \emph{\textbf{Step 5}} Complete the wheel by doing $N-1$ copies
-of the first petal, rotating them around the origin by an angle of $2\pi k/N, \, k=1, 2,
-\cdots N-1$.
+\noindent \emph{\textbf{Step 5}} Complete the wheel by doing $N-1$
+copies of the first petal, rotating them around the origin by an angle
+of $2\pi k/N, \, k=1, 2, \cdots N-1$.
 
 \hfill $\blacksquare$ \\
 
@@ -556,10 +591,12 @@ at the back and one smaller up front, that is able climb or descend a
 staircase while still providing a comfortable ride to its passenger.
 
 \section{Proof of concept}
+\label{sec:proof-of-concept}
 
 We have implemented the algorithm developed in the previous section
-into an interactive animation made available at \cite{web-animation}. It works in any modern web-browser, including tablets and
-smartphones, without the need for any additional software.
+into an interactive animation made available at
+\cite{web-animation}. It works in any modern web browser, including
+tablets and smartphones, without the need for any additional software.
 
 This animation allows the user to enter the parameters for the
 simulation, including the tread width $T$, the riser height $R$ and
@@ -571,8 +608,8 @@ of the first, and select its size independently from the first.
 To build the wheel we follow exactly the procedure outlined above. The
 only complication is that, in order to animate the wheel, it was
 necessary to calculate $\theta(t)$. However, retracing the steps in
-Proposition \ref{spiral-wheel}, it is not difficult to verify that, for
-the first step, $\theta(t)$ is given by
+Proposition \ref{spiral-wheel}, it is not difficult to verify that,
+for the first step, $\theta(t)$ is given by
 
 \begin{equation}
   \theta(t)=
@@ -581,7 +618,7 @@ the first step, $\theta(t)$ is given by
       \theta_1(t)=-\frac{\ln\left(1-\frac{m}{y_0}t\right)}{m}-\frac{\pi}{2},
       & t \in \left[x_1,0\right]
       \\
-\\
+      \\
       \theta_2(t)=m\ln\left(\frac{1}{my_0}t+1\right)-\frac{\pi}{2},
       & t \in \left[0, x_2\right]
     \end{array}
@@ -589,16 +626,33 @@ the first step, $\theta(t)$ is given by
 \end{equation}
 
 \begin{figure}[h]
-\centering
-\includegraphics[width=.9\linewidth]{fig-prototype.png}
-\caption{A screenshot of the working prototype}
-\label{fig:prototype}
+  \centering
+  \includegraphics[width=.9\linewidth]{fig-prototype.png}
+  \caption{A screenshot of the working prototype showing two different
+    wheels rolling over a staircase}
+  \label{fig:prototype}
 \end{figure}
 
 
 \section{Conclusion}
 
-TODO
+In this document we have shown that it is possible to design wheels
+properly suited to climb or descend stairs in such a way that any
+vehicles attached to them will follow a linear path, free of
+bumpiness, just like circular wheels do on flat surfaces. Moreover, we
+have demonstrated that, for each stair, there are many different
+wheels that can roll smoothly over it, all of them assembled from
+segments of Bernoulli spirals. Finally, we have introduced an
+algorithm to design these wheels, based on the dimensions of the
+staircase and the desired size of the wheel, and implemented this
+algorithm into a web application available online.
+
+Unfortunately, as we have seen, there is no general purpose wheel that
+works for all staircases. However, these wheels could still be useful
+in some particular scenarios, such as public buildings or airplane
+stairs, where the stairs have well known dimensions and wheels could
+be built specifically for them. Further work needs to be done in order
+to assess their applicability.
 
 \begin{thebibliography}{10}
 
@@ -609,7 +663,7 @@ TODO
   Unpublished.
 
 \bibitem{web-animation}Proof of concept,
-   \url{http://pureza.github.io/app/} (Jun. 2015).
+  \url{http://pureza.github.io/app/} (Jun. 2015).
 
 \end{thebibliography}
 

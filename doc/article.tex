@@ -24,9 +24,7 @@
 \begin{document}
 
 \title{Reinventing the wheel: designing wheels for staircases} \date{}
-\author{
-  Luís Pureza
-}
+\author{ Luís Pureza }
 \maketitle
 
 \section{Introduction}
@@ -44,20 +42,24 @@ described as smooth.
 
 Unfortunately, staircases are not flat and climbing or descending them
 on circular wheels is anything but a smooth experience. This leads us
-to wonder whether it would be possible to design wheels specialized
-to roll over staircases while providing a comfortable ride. These
-wheels could potentially be mounted on wheelchairs to help disabled
-people, or used in small transportation vehicles in places where lifts
-or ramps are unavailable.
+to wonder whether it would be possible to design wheels specialized to
+roll over staircases while providing a comfortable ride. These wheels
+could potentially be mounted on wheelchairs to help disabled people,
+or used in small transportation vehicles in places where lifts or
+ramps are unavailable.
 
-In this document we propose to study the shape of wheels for
-staircases. Perhaps surprisingly, we will find out that there is, for each staircase, an
-infinite number of wheels matching our criteria for comfort and
-smoothness, and we will develop an algorithm to design them all. Our
-work follows from that of Hall and Wagon \cite{hall-wagon}, who
-focused on the more general problem of designing wheels for roads of
-arbitrary shape. They haven't, however, investigated in detail the
-particular case of roads shaped like staircases.
+Perhaps surprisingly, Leite et al. showed, in \cite{leite}, that there
+is, for each staircase, an infinite number of wheels matching our
+criteria for comfort and smoothness. Moreover, they developed an
+algorithm to design them all in a systematic manner. The present work
+is based in \cite{hall-wagon} and \cite{leite}. After understanding
+the mathematics of rolling, our main contribution was the conception
+of an interactive web animation that clearly shows how wheels for
+different staircases look like and how they are able to roll
+smoothly. This animation will be made accessible, in particular to
+mathematical students attending the course on Differential Equations
+and Modelling at DMUC. This material can motivate the study of ODEs
+through an interesting and useful application.
 
 The rest of this document is organised as follows. In section
 \ref{sec:model} we express the problem of pairing roads and wheels
@@ -65,12 +67,12 @@ mathematically and derive a model to solve it. We then apply this
 model, first in section \ref{sec:linear-roads} for the simpler case of
 straight roads and then for staircases in section
 \ref{sec:staircases}. This leads us to section \ref{sec:algorithm},
-where we systematize all our findings and describe an algorithm to
-build wheels for staircases, step by step. Then, in section
-\ref{sec:proof-of-concept} we present a simulator that implements this
-algorithm and is available online. Finally, we conclude with some
-remarks regarding the feasibility of using these wheels in the real
-world.
+where we put together the results from the previous sections and
+describe an algorithm to build wheels for staircases, step by
+step. Then, in section \ref{sec:proof-of-concept} we present a
+simulator that implements this algorithm and is available
+online. Finally, we conclude with some remarks regarding the
+feasibility of using these wheels in the real world.
 
 \section{Pairing roads and wheels }
 \label{sec:model}
@@ -511,7 +513,7 @@ make this happen by varying the height of the wheel.
 The proposition above allows us to conclude that, by varying the
 height of the (imaginary) handrail where the centre of the wheel
 passes, we can build a closed wheel with any number of petals. We have
-just proved the following theorem:
+just proved the following theorem, due to Leite et al. \cite{leite}:
 
 \begin{thm}
   For every staircase, there is an infinite number of wheels, each
@@ -636,16 +638,16 @@ for the first step, $\theta(t)$ is given by
 
 \section{Conclusion}
 
-In this document we have shown that it is possible to design wheels
-properly suited to climb or descend stairs in such a way that any
-vehicles attached to them will follow a linear path, free of
-bumpiness, just like circular wheels do on flat surfaces. Moreover, we
-have demonstrated that, for each stair, there are many different
-wheels that can roll smoothly over it, all of them assembled from
-segments of Bernoulli spirals. Finally, we have introduced an
-algorithm to design these wheels, based on the dimensions of the
-staircase and the desired size of the wheel, and implemented this
-algorithm into a web application available online.
+In this document we have described how to design wheels properly
+suited to climb or descend stairs in such a way that any vehicles
+attached to them will follow a linear path, free of bumpiness, just
+like circular wheels do on flat surfaces. Moreover, we have
+demonstrated that, for each stair, there are many different wheels
+that can roll smoothly over it, all of them assembled from segments of
+Bernoulli spirals. Finally, we have introduced an algorithm to design
+these wheels, based on the dimensions of the staircase and the desired
+size of the wheel, and implemented this algorithm into a web
+application available online.
 
 Unfortunately, as we have seen, there is no general purpose wheel that
 works for all staircases. However, these wheels could still be useful

@@ -1,0 +1,718 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+	<meta charset="utf-8">
+
+	<title>Reinventando a roda: desenhando rodas para escadas</title>
+
+	<meta name="description" content="Reinventando a roda: desenhando rodas para escadas">
+	<meta name="author" content="Luís Pureza">
+
+	<meta name="apple-mobile-web-app-capable" content="yes" />
+	<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+
+	<link rel="stylesheet" href="css/reveal.css">
+	<link rel="stylesheet" href="css/theme/white.css" id="theme">
+
+	<!-- Code syntax highlighting -->
+	<link rel="stylesheet" href="lib/css/zenburn.css">
+
+	<link rel="stylesheet" href="css/style.css">
+	<script src="js/d3.js" charset="utf-8"></script>
+
+	<!-- Printing and PDF exports -->
+	<script>
+		var link = document.createElement( 'link' );
+		link.rel = 'stylesheet';
+		link.type = 'text/css';
+		link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
+		document.getElementsByTagName( 'head' )[0].appendChild( link );
+	</script>
+
+	<!--[if lt IE 9]>
+	<script src="lib/js/html5shiv.js"></script>
+	<![endif]-->
+</head>
+
+<body>
+
+<div class="reveal">
+
+	<!-- Any section element inside of this container is displayed as a slide -->
+	<div class="slides">
+		<section class="slide intro" data-state="intro">
+			<h1>A reinvenção da roda</h1>
+			<h2>Desenhando rodas para escadas</h2>
+			<p style="margin-top: 100px">
+				<small>Luís Pureza</small>
+			</p>
+			<p>
+				<small>Seminário Matemático 2014/2015</small>
+			</p>
+
+			<svg id="canvas1">
+				<g id="world1"></g>
+			</svg>
+
+			<script src="js/wheel-intro.js"></script>
+		</section>
+
+		<section data-state="motivation">
+			<h2>Motivação</h2>
+
+			<p style="margin-top: 100px">
+				Rodas circulares são óptimas para superfícies planas...
+			</p>
+
+			<svg id="canvas2" height="500">
+				<g id="world2"></g>
+			</svg>
+
+			<script src="js/circle-wheel.js"></script>
+		</section>
+
+		<section data-state="motivation2">
+			<h2>Motivação</h2>
+
+			<p style="margin-top: 100px">
+				Mas não para subir ou descer escadas.
+			</p>
+
+			<svg height="500">
+				<g id="world3"></g>
+			</svg>
+
+			<script src="js/circle-wheel-on-stairs.js"></script>
+		</section>
+
+		<section data-state="motivation3">
+			<h2>Motivação</h2>
+
+			<p style="margin-top: 100px">
+				Será possível desenhar uma roda confortável em escadas?
+			</p>
+
+			<svg height="500">
+				<g id="world4"></g>
+			</svg>
+
+			<script src="js/unknown-wheel-on-stairs.js"></script>
+		</section>
+
+		<section>
+			<h2>Modelação do problema</h2>
+		</section>
+
+		<section data-state="roads">
+			<h2>A estrada</h2>
+
+			<p style="margin-top: 100px; margin-bottom: 75px">
+				\[ 	\left \lbrace
+				\begin{array}{ll}
+				(x, y) = (x(t), y(t)), & t \geq 0 \\
+				y < 0
+				\end{array}
+				\right.
+				\]
+			</p>
+
+			<svg height="400">
+				<g id="world5"></g>
+			</svg>
+
+			<script src="js/roads.js"></script>
+		</section>
+
+		<section data-state="wheels">
+			<h2>A roda</h2>
+
+			<p style="margin-top: 100px; margin-bottom: 75px">
+				\[
+				\begin{array}{ll}
+				(r, \theta) = (r(t), \theta(t)), & t \geq 0
+				\end{array}
+				\]
+			</p>
+
+			<svg height="400">
+				<g id="world6"></g>
+			</svg>
+
+			<script src="js/wheels.js"></script>
+		</section>
+
+		<section data-state="wheel-center">
+			<h2>Condições de suavidade</h2>
+			<ol style="margin-bottom: 75px">
+				<li>
+					O centro da roda move-se em linha recta
+				</li>
+			</ol>
+
+			<svg height="400">
+				<g id="world7"></g>
+			</svg>
+
+			<script src="js/wheel-center-straight-line.js"></script>
+		</section>
+
+		<section data-state="no-sliding">
+			<h2>Condições de suavidade</h2>
+			<ol style="margin-bottom: 75px" start="2">
+				<li>
+					A roda gira sem escorregar
+				</li>
+			</ol>
+
+			<svg height="400">
+				<g id="world8"></g>
+			</svg>
+
+			<p style="margin-top: 50px; font-size: .7em">
+				\[ \int_0^t{\sqrt{\left(\frac{dx}{dt}\right)^2+\left(\frac{dy}{dt}\right)^2}} dt = \int_{-\frac{\pi}{2}}^{\theta(t)}{\sqrt{r(\theta)^2+\left(\frac{dr}{d\theta}\right)^2}} d\theta \]
+			</p>
+
+			<script src="js/no-sliding.js"></script>
+		</section>
+
+		<section data-state="no-bouncing">
+			<h2>Condições de suavidade</h2>
+			<ol style="margin-bottom: 75px" start="3">
+				<li>
+					A roda está sempre em contacto com a estrada
+				</li>
+			</ol>
+
+			<svg height="400">
+				<g id="world9"></g>
+			</svg>
+
+			<p style="margin-top: 50px; font-size: .7em">
+				\[ r(\theta(t)) = -y(t) \]
+			</p>
+
+			<script src="js/no-bouncing.js"></script>
+		</section>
+
+		<section>
+			<h2>Problema de valor inicial</h2>
+
+			<p style="margin-top: 50px; margin-bottom: 50px; font-size: .7em">
+				\[ \frac{d\theta}{dt}=-\frac{1}{y(t)}\frac{dx}{dt}, \quad \theta(0) = -\pi/2 \]
+			</p>
+
+			<p class="fragment">Permite encontrar $\theta(t)$</p>
+			<p class="fragment">Invertendo obtemos $t(\theta)$</p>
+			<p class="fragment">Finalmente obtemos a roda a partir de $r(\theta) = -y(t(\theta))$</p>
+		</section>
+
+		<section>
+			<h2>Problema de valor inicial</h2>
+
+			<p style="margin-top: 50px; margin-bottom: 50px">
+				Se $y=f(x)$:
+			</p>
+			<p>
+				\[ \frac{d\theta}{dt}=-\frac{1}{y(t)}, \quad \theta(0) = -\pi/2 \]
+			</p>
+		</section>
+
+		<section>
+			<h2>Exemplo</h2>
+
+			<p style="margin-top: 50px; margin-bottom: 50px; font-size: .7em">
+				\[ y=-mx-y_0 \]
+			</p>
+
+			<svg height="400">
+				<line x1="0" x2="600" y1="151" y2="151" stroke="black"></line>
+				<line x1="300" x2="300" y1="0" y2="400" stroke="black"></line>
+				<text x="550" y="175" stroke="black" font-family="serif" font-style="italic" font-size="0.8em">x</text>
+				<text x="270" y="30" stroke="black" font-family="serif" font-style="italic" font-size="0.8em">y</text>
+				<line x1="55" x2="485" y1="180" y2="235.9" stroke="darkgray" stroke-width="2"></line>
+			</svg>
+		</section>
+
+		<section data-state="spiral">
+			<h2>Exemplo</h2>
+
+			<p style="margin-top: 50px; margin-bottom: 50px; font-size: .7em">
+				\[ r(\theta)=y_0e^{m(\theta+\frac{\pi}{2})} \]
+			</p>
+
+			<svg height="400">
+				<g id="world10"></g>
+			</svg>
+
+			<script src="js/spiral-wheel.js"></script>
+		</section>
+
+		<section data-state="spiral2">
+			<h2>Exemplo</h2>
+
+			<p style="margin-top: 50px; margin-bottom: 50px; font-size: .7em">
+				\[ r(\theta)=y_0e^{m(\theta+\frac{\pi}{2})} \]
+			</p>
+
+			<svg height="400">
+				<g id="world11"></g>
+			</svg>
+
+			<script src="js/spiral-wheel.js"></script>
+		</section>
+
+		<section data-state="spiral3">
+			<h2>Exemplo</h2>
+
+			<p style="margin-top: 50px; margin-bottom: 50px; font-size: .7em">\[ r(\theta)=y_0e^{m(\theta+\frac{\pi}{2})} \]
+			</p>
+
+			<svg height="400">
+				<g id="world12"></g>
+			</svg>
+
+			<script src="js/spiral-wheel.js"></script>
+		</section>
+
+		<section>
+			<h2>Espirais logaritmicas</h2>
+
+			<p>
+				\[ r(\theta)=ae^{b\theta}\]
+			</p>
+
+			<img src="img/equiangular.png" style="border: none; box-shadow: none">
+		</section>
+
+		<section>
+			<h2>Rodas para escadas</h2>
+		</section>
+
+		<section>
+			<h2>Configuração da escada</h2>
+
+			<img src="img/staircase.png" style="border: 0; box-shadow: none">
+
+			<p>
+				\[
+				y(x)=
+				\left \lbrace
+				\begin{array}{ll}
+				y_1(x) = mx-y_0, & x \in [x_1,0] \\
+				y_2(x) = -\frac{1}{m}x-y_0, & x \in [0, x_2]
+				\end{array}
+				\right. \quad
+				\]
+			</p>
+		</section>
+
+		<section data-state="wheel-step-tread">
+			<h2>Roda para o segmento horizontal</h2>
+
+			<svg height="600">
+				<g id="world13"></g>
+			</svg>
+
+			<script src="js/wheel-step-tread.js"></script>
+		</section>
+
+		<section data-state="wheel-step-riser">
+			<h2>Roda para o segmento verical</h2>
+
+			<svg height="600">
+				<g id="world14"></g>
+			</svg>
+
+			<script src="js/wheel-step-riser.js"></script>
+		</section>
+
+		<section data-state="wheel-step">
+			<h2>Roda para um degrau</h2>
+
+			<svg height="500">
+				<g id="world15"></g>
+			</svg>
+
+			<p>
+				\[
+				r(\theta)=
+				\left \lbrace
+				\begin{array}{ll}
+				r_1(\theta) = y_0e^{-m\left(\theta+\frac{\pi}{2}\right)}, & \theta \in \left[-\frac{\pi}{2}-\theta_1,-\frac{\pi}{2}\right] \\
+				r_2(\theta) = y_0e^{\frac{1}{m}\left(\theta+\frac{\pi}{2}\right)}, & \theta \in \left[-\frac{\pi}{2}, -\frac{\pi}{2}+\theta_2\right]
+				\end{array}
+				\right. \quad
+				\]
+			</p>
+
+			<script src="js/wheel-step.js"></script>
+		</section>
+
+		<section data-state="completing-wheel">
+			<h2>Completando a roda</h2>
+
+			<svg height="600">
+				<g id="world16"></g>
+			</svg>
+
+			<script src="js/completing-wheel.js"></script>
+		</section>
+
+		<section>
+			<h2>Mas será que funciona?</h2>
+		</section>
+
+		<section>
+			<h2>$\theta_1?$</h2>
+
+			<img src="img/one-step-wheel2.png" style="border: none; box-shadow: none">
+
+			<p class="fragment">
+				\[ T=\int^{-\frac{\pi}{2}}_{-\frac{\pi}{2}-\theta_1}r_1(\theta)\sqrt{1+m^2}\,d\theta \]
+			</p>
+
+			<p class="fragment">
+				\[ \theta_1=\frac{1}{m}\ln\left(\frac{R}{y_0\sqrt{1+m^2}}+1\right) \]
+			</p>
+		</section>
+
+		<section>
+			<h2>$\theta_2?$</h2>
+
+			<img src="img/one-step-wheel2.png" style="border: none; box-shadow: none">
+
+			<p>
+				\[ R=\int^{-\frac{\pi}{2}+\theta_2}_{-\frac{\pi}{2}}r_2(\theta)\sqrt{1+\frac{1}{m^2}} \,d\theta \]
+			</p>
+
+			<p>
+				\[ \theta_2=m\ln\left(\frac{R}{y_0\sqrt{1+m^2}}+1\right) \]
+			</p>
+		</section>
+
+		<section>
+			<h2>A roda é contínua?</h2>
+
+			<img src="img/continuous-wheel.png" style="border: none; box-shadow: none">
+
+			<p>
+				\[ r_1\left(-\frac{\pi}{2}-\theta_1\right)=r_2\left(-\frac{\pi}{2}+\theta_2\right)=\frac{R}{\sqrt{1+m^2}}+y_0 \]
+			</p>
+		</section>
+
+		<section>
+			<h2>A roda ajusta-se à escada?</h2>
+
+			<img src="img/petals-right-angle.png" style="border: none; box-shadow: none">
+
+			<p>
+				\[ \alpha+\beta=\pi/2 \]
+				Pétalas consecutivas são $\bot$
+			</p>
+		</section>
+
+		<section>
+			<h2>A roda fecha?</h2>
+
+			<img src="img/open-wheel.png" style="border: none; box-shadow: none">
+		</section>
+
+		<section>
+			<h2>A roda fecha?</h2>
+
+			<img src="img/periodic.png" style="border: none; box-shadow: none" width="350" height="350">
+
+			<p>
+				Já sabemos que $r(\theta)$ é periódica de período $\theta_1+\theta_2$
+			</p>
+			<p>
+				Queremos também que $r(\theta)$ seja periódica de período 2$\pi$
+			</p>
+		</section>
+
+		<section>
+			<h2>A roda fecha!</h2>
+
+			<p style="margin-bottom: 50px; margin-top: 50px">
+				\[
+				\begin{array}{lcl}
+				\theta_1+\theta_2=\frac{2\pi}{N} & \Leftrightarrow
+				& y_0=\frac{R}{\sqrt{1+m^2}\left(e^{\frac{2\pi
+				m}{N(1+m^2)}}-1\right)}
+				\end{array}
+				\]
+			</p>
+			<p>
+				A roda com $N$ pétalas cujo centro tem $y_0$ de altura é fechada!
+			</p>
+		</section>
+
+		<section>
+			<h2>Teoreoma</h2>
+
+			<p style="margin-bottom: 50px; margin-top: 50px">
+				Para qualquer escada existe um número infinito de rodas que a ela se ajustam.
+			</p>
+		</section>
+
+		<section data-state="wheel1">
+			<h2>Exemplo</h2>
+
+			<svg height="500">
+				<g id="world17"></g>
+			</svg>
+
+			<script src="js/staircase-wheel.js"></script>
+		</section>
+
+		<section data-state="wheel2">
+			<h2>Exemplo</h2>
+
+			<svg height="500">
+				<g id="world18"></g>
+			</svg>
+		</section>
+
+		<section data-state="wheel3">
+			<h2>Exemplo</h2>
+
+			<svg height="500">
+				<g id="world19"></g>
+			</svg>
+		</section>
+
+		<section data-state="wheel4">
+			<h2>Exemplo</h2>
+
+			<svg height="600">
+				<g id="world20"></g>
+			</svg>
+		</section>
+
+		<section>
+			<h2>Algoritmo para desenhar a roda</h2>
+		</section>
+
+		<section>
+			<h2>Passo 1</h2>
+
+			<img src="img/staircaseTR.png" style="border: none; box-shadow: none; margin-top: 50px; margin-bottom: 50px">
+
+			<p>$ m = R/T $</p>
+		</section>
+
+		<section>
+			<h2>Passo 2</h2>
+
+			<p style="margin-top: 100px">
+					\[
+					y_0=\frac{R}{\sqrt{1+m^2}\left(e^{\frac{2\pi m}{N(1+m^2)}}-1\right)}
+					\]
+			</p>
+		</section>
+
+		<section>
+			<h2>Passo 3</h2>
+
+			<p style="font-size: 0.75em; margin-top: 100px">
+				\begin{array}{c}
+				\displaystyle
+				\theta_1=\frac{1}{m}\ln\left(\frac{R}{y_0\sqrt{1+m^2}}+1\right) \\
+				\\
+				\displaystyle \theta_2=m\ln\left(\frac{R}{y_0\sqrt{1+m^2}}+1\right)
+				\end{array}
+			</p>
+		</section>
+
+		<section>
+			<h2>Passo 4</h2>
+
+			<img src="img/one-step-wheel2.png" style="border: none; box-shadow: none;">
+
+			<p style="font-size: 0.75em">
+				\[
+				r(\theta)=
+				\left \lbrace
+				\begin{array}{ll}
+				r_1(\theta) = y_0e^{-m\left(\theta+\frac{\pi}{2}\right)}, & \theta \in \left[-\frac{\pi}{2}-\theta_1,-\frac{\pi}{2}\right] \\
+				r_2(\theta) = y_0e^{\frac{1}{m}\left(\theta+\frac{\pi}{2}\right)}, & \theta \in \left[-\frac{\pi}{2}, -\frac{\pi}{2}+\theta_2\right]
+				\end{array}
+				\right. \quad
+				\]
+			</p>
+		</section>
+
+		<section>
+			<h2>Passo 5</h2>
+
+			<img src="img/periodic.png" style="border: none; box-shadow: none;">
+		</section>
+
+		<section>
+			<h2>Prova de conceito</h2>
+
+			<img src="img/fig-prototype.png" style="border: none; box-shadow: none;">
+
+			<p>
+			<a href="http://pureza.github.io/app" target="_blank">Link</a>
+			</p>
+		</section>
+
+		<section data-state="end">
+			<h2>Fim</h2>
+			<svg height="500" style="margin-top: 100px">
+				<g id="world21"></g>
+			</svg>
+		</section>
+	</div>
+
+</div>
+
+<script src="lib/js/head.min.js"></script>
+<script src="js/reveal.js"></script>
+
+<script>
+
+	// Full list of configuration options available at:
+	// https://github.com/hakimel/reveal.js#configuration
+	Reveal.initialize({
+		controls: true,
+		progress: true,
+		history: true,
+		center: true,
+
+		transition: 'none', // none/fade/slide/convex/concave/zoom
+
+		math: {
+			//mathjax: 'js/MathJax-master/MathJax.js',
+			config: 'TeX-AMS_HTML-full'  // See http://docs.mathjax.org/en/latest/config-files.html
+		},
+
+		// Optional reveal.js plugins
+		dependencies: [
+			{ src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+			{ src: 'plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+			{ src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+			{ src: 'plugin/highlight/highlight.js', async: true, condition: function() { return !!document.querySelector( 'pre code' ); }, callback: function() { hljs.initHighlightingOnLoad(); } },
+			{ src: 'plugin/zoom-js/zoom.js', async: true },
+			{ src: 'plugin/notes/notes.js', async: true },
+			{ src: 'plugin/math/math.js', async: true }
+		]
+	});
+
+
+	var flushAllD3Transitions = function() {
+		var now = Date.now;
+		Date.now = function() { return Infinity; };
+		d3.timer.flush();
+		Date.now = now;
+	};
+
+
+	function switchSimulation(newSimulation) {
+		flushAllD3Transitions();
+
+		if (typeof currentSimulation !== 'undefined') {
+			currentSimulation.stop();
+		}
+
+		currentSimulation = newSimulation;
+		currentSimulation.start();
+	}
+
+
+	var currentSimulation = wheelIntroSimulation(d3.select('#world1'));
+	currentSimulation.start();
+
+	Reveal.addEventListener('intro', function(event) {
+		switchSimulation(wheelIntroSimulation(d3.select('#world1')));
+	});
+
+	Reveal.addEventListener('motivation', function(event) {
+		switchSimulation(circleWheelSimulation());
+	});
+
+	Reveal.addEventListener('motivation2', function(event) {
+		switchSimulation(circleWheelOnStairsSimulation());
+	});
+
+	Reveal.addEventListener('motivation3', function(event) {
+		switchSimulation(unknownWheelOnStairsSimulation());
+	});
+
+
+	Reveal.addEventListener('roads', function(event) {
+		switchSimulation(roadsSimulation());
+	});
+
+
+	Reveal.addEventListener('wheels', function(event) {
+		switchSimulation(wheelsSimulation());
+	});
+
+
+	Reveal.addEventListener('wheel-center', function(event) {
+		switchSimulation(wheelCenterStraightLineSimulation());
+	});
+
+	Reveal.addEventListener('no-sliding', function(event) {
+		switchSimulation(noSlidingSimulation());
+	});
+
+	Reveal.addEventListener('no-bouncing', function(event) {
+		switchSimulation(noBouncingSimulation());
+	});
+
+	Reveal.addEventListener('spiral', function(event) {
+		switchSimulation(spiralSimulation(d3.select('#world10'), 0.13));
+	});
+
+	Reveal.addEventListener('spiral2', function(event) {
+		switchSimulation(spiralSimulation(d3.select('#world11'), 0.2));
+	});
+
+	Reveal.addEventListener('spiral3', function(event) {
+		switchSimulation(spiralSimulation(d3.select('#world12'), 0.05));
+	});
+
+	Reveal.addEventListener('wheel-step-tread', function(event) {
+		switchSimulation(wheelStepTreadSimulation());
+	});
+
+	Reveal.addEventListener('wheel-step-riser', function(event) {
+		switchSimulation(wheelStepRiserSimulation());
+	});
+
+	Reveal.addEventListener('wheel-step', function(event) {
+		switchSimulation(wheelStepSimulation());
+	});
+
+	Reveal.addEventListener('completing-wheel', function(event) {
+		switchSimulation(completingWheelSimulation());
+	});
+
+	Reveal.addEventListener('wheel1', function(event) {
+		switchSimulation(staircaseWheelSimulation(d3.select('#world17'), 1));
+	});
+
+	Reveal.addEventListener('wheel2', function(event) {
+		switchSimulation(staircaseWheelSimulation(d3.select('#world18'), 2));
+	});
+
+	Reveal.addEventListener('wheel3', function(event) {
+		switchSimulation(staircaseWheelSimulation(d3.select('#world19'), 5));
+	});
+
+	Reveal.addEventListener('wheel4', function(event) {
+		switchSimulation(staircaseWheelSimulation(d3.select('#world20'), 10));
+	});
+
+	Reveal.addEventListener('end', function(event) {
+		switchSimulation(wheelIntroSimulation(d3.select('#world21')));
+	});
+</script>
+</body>
+</html>

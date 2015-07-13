@@ -1,0 +1,16 @@
+.slides h1 {
+    font-size: 2.3em;
+}
+
+.slides h2 {
+    font-size: 1.4em;
+}
+
+.slides p {
+    font-size: 0.8em;
+}
+
+section svg {
+    width: 60%;
+    height: 100%;
+}

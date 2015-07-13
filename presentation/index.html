@@ -161,7 +161,7 @@
 
 		<section data-state="no-sliding">
 			<h2>Condições de suavidade</h2>
-			<ol style="margin-bottom: 75px" start="2">
+			<ol style="margin-bottom: 20px" start="2">
 				<li>
 					A roda gira sem escorregar
 				</li>
@@ -171,7 +171,7 @@
 				<g id="world8"></g>
 			</svg>
 
-			<p style="margin-top: 50px; font-size: .7em">
+			<p style="margin-top: 20px; font-size: .5em">
 				\[ \int_0^t{\sqrt{\left(\frac{dx}{dt}\right)^2+\left(\frac{dy}{dt}\right)^2}} dt = \int_{-\frac{\pi}{2}}^{\theta(t)}{\sqrt{r(\theta)^2+\left(\frac{dr}{d\theta}\right)^2}} d\theta \]
 			</p>
 
@@ -180,7 +180,7 @@
 
 		<section data-state="no-bouncing">
 			<h2>Condições de suavidade</h2>
-			<ol style="margin-bottom: 75px" start="3">
+			<ol style="margin-bottom: 20px" start="3">
 				<li>
 					A roda está sempre em contacto com a estrada
 				</li>
@@ -190,7 +190,7 @@
 				<g id="world9"></g>
 			</svg>
 
-			<p style="margin-top: 50px; font-size: .7em">
+			<p style="margin-top: 20px; font-size: .5em">
 				\[ r(\theta(t)) = -y(t) \]
 			</p>
 
@@ -336,7 +336,7 @@
 				<g id="world15"></g>
 			</svg>
 
-			<p>
+			<p style="font-size: 0.5em">
 				\[
 				r(\theta)=
 				\left \lbrace
@@ -370,13 +370,19 @@
 
 			<img src="img/one-step-wheel2.png" style="border: none; box-shadow: none">
 
-			<p class="fragment">
-				\[ T=\int^{-\frac{\pi}{2}}_{-\frac{\pi}{2}-\theta_1}r_1(\theta)\sqrt{1+m^2}\,d\theta \]
-			</p>
+			<span class="fragment" style="font-size: 0.75em">
+				\[ T=\int^{-\frac{\pi}{2}}_{-\frac{\pi}{2}-\theta_1}r_1(\theta)\sqrt{1+m^2}\,d\theta  \]
+			</span>
+		</section>
 
-			<p class="fragment">
-				\[ \theta_1=\frac{1}{m}\ln\left(\frac{R}{y_0\sqrt{1+m^2}}+1\right) \]
-			</p>
+		<section>
+			<h2>$\theta_1?$</h2>
+
+			<img src="img/one-step-wheel2.png" style="border: none; box-shadow: none">
+
+			<span style="font-size: 0.75em">
+				\[ T=\int^{-\frac{\pi}{2}}_{-\frac{\pi}{2}-\theta_1}r_1(\theta)\sqrt{1+m^2}\,d\theta \quad \Leftrightarrow \quad \theta_1=\frac{1}{m}\ln\left(\frac{R}{y_0\sqrt{1+m^2}}+1\right)  \]
+			</span>
 		</section>
 
 		<section>
@@ -384,12 +390,8 @@
 
 			<img src="img/one-step-wheel2.png" style="border: none; box-shadow: none">
 
-			<p>
-				\[ R=\int^{-\frac{\pi}{2}+\theta_2}_{-\frac{\pi}{2}}r_2(\theta)\sqrt{1+\frac{1}{m^2}} \,d\theta \]
-			</p>
-
-			<p>
-				\[ \theta_2=m\ln\left(\frac{R}{y_0\sqrt{1+m^2}}+1\right) \]
+			<p style="font-size: 0.75em">
+				\[ R=\int^{-\frac{\pi}{2}+\theta_2}_{-\frac{\pi}{2}}r_2(\theta)\sqrt{1+\frac{1}{m^2}} \,d\theta \quad \Leftrightarrow \quad \theta_2=m\ln\left(\frac{R}{y_0\sqrt{1+m^2}}+1\right)\]
 			</p>
 		</section>
 
@@ -398,7 +400,7 @@
 
 			<img src="img/continuous-wheel.png" style="border: none; box-shadow: none">
 
-			<p>
+			<p style="font-size: 0.75em; margin-top: 0">
 				\[ r_1\left(-\frac{\pi}{2}-\theta_1\right)=r_2\left(-\frac{\pi}{2}+\theta_2\right)=\frac{R}{\sqrt{1+m^2}}+y_0 \]
 			</p>
 		</section>
@@ -406,11 +408,10 @@
 		<section>
 			<h2>A roda ajusta-se à escada?</h2>
 
-			<img src="img/petals-right-angle.png" style="border: none; box-shadow: none">
+			<img src="img/petals-right-angle.png" style="border: none; box-shadow: none; margin: 0">
 
 			<p>
 				\[ \alpha+\beta=\pi/2 \]
-				Pétalas consecutivas são $\bot$
 			</p>
 		</section>
 
@@ -587,7 +588,7 @@
 		transition: 'none', // none/fade/slide/convex/concave/zoom
 
 		math: {
-			//mathjax: 'js/MathJax-master/MathJax.js',
+			mathjax: 'js/MathJax-master/MathJax.js',
 			config: 'TeX-AMS_HTML-full'  // See http://docs.mathjax.org/en/latest/config-files.html
 		},
 

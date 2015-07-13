@@ -22,7 +22,7 @@ function roadsSimulation() {
           x1: 300,
           x2: 300,
           y1: 0,
-          y2: 400,
+          y2: 300,
           stroke: 'black'
         });
 

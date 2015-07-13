@@ -104,6 +104,12 @@
 
 		<section>
 			<h2>Modelação do problema</h2>
+
+			<img src="img/roads-and-wheels.png" style="border: none; box-shadow: none">
+
+			<p style="font-size: 0.4em; margin: 0">
+				Leon Hall and Stan Wagon, <em>Roads and Wheels</em>
+			</p>
 		</section>
 
 		<section data-state="roads">
@@ -131,9 +137,12 @@
 
 			<p style="margin-top: 100px; margin-bottom: 75px">
 				\[
+				\left \lbrace
 				\begin{array}{ll}
-				(r, \theta) = (r(t), \theta(t)), & t \geq 0
+				(r, \theta) = (r(t), \theta(t)), & t \geq 0 \\
+				\theta(0)=-\pi/2
 				\end{array}
+				\right.
 				\]
 			</p>
 
@@ -197,6 +206,28 @@
 			<script src="js/no-bouncing.js"></script>
 		</section>
 
+		<section data-state="no-bouncing">
+			<h2>Condições de suavidade</h2>
+			<ol>
+				<li style="margin-bottom: 40px;">
+					O centro da roda move-se em linha recta
+				</li>
+				<li style="margin-bottom: 40px;">
+					A roda gira sem escorregar
+					<p>
+					\[ \int_0^t{\sqrt{\left(\frac{dx}{dt}\right)^2+\left(\frac{dy}{dt}\right)^2}} dt = \int_{-\frac{\pi}{2}}^{\theta(t)}{\sqrt{r(\theta)^2+\left(\frac{dr}{d\theta}\right)^2}} d\theta \]
+					</p>
+				</li>
+				<li style="margin-bottom: 40px;">
+					A roda está sempre em contacto com a estrada
+
+					<p>
+						\[ r(\theta(t)) = -y(t) \]
+					</p>
+				</li>
+			</ol>
+		</section>
+
 		<section>
 			<h2>Problema de valor inicial</h2>
 
@@ -209,16 +240,6 @@
 			<p class="fragment">Finalmente obtemos a roda a partir de $r(\theta) = -y(t(\theta))$</p>
 		</section>
 
-		<section>
-			<h2>Problema de valor inicial</h2>
-
-			<p style="margin-top: 50px; margin-bottom: 50px">
-				Se $y=f(x)$:
-			</p>
-			<p>
-				\[ \frac{d\theta}{dt}=-\frac{1}{y(t)}, \quad \theta(0) = -\pi/2 \]
-			</p>
-		</section>
 
 		<section>
 			<h2>Exemplo</h2>
@@ -588,7 +609,7 @@
 		transition: 'none', // none/fade/slide/convex/concave/zoom
 
 		math: {
-		//	mathjax: 'js/MathJax-master/MathJax.js',
+			//mathjax: 'js/MathJax-master/MathJax.js',
 			config: 'TeX-AMS_HTML-full'  // See http://docs.mathjax.org/en/latest/config-files.html
 		},
 

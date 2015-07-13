@@ -143,21 +143,21 @@ function wheelStepSimulation() {
             wheel
                 .attr('transform', 'translate(' + (Ox + h) + ',' + (Oy + (maxY0 - y0)) + '), rotate(' + (θ(0)) + ')')
                 .transition()
-                .delay(4000)
+                .delay(2000)
                 .attrTween('transform', tweenRiser)
-                .duration(1000) // When speed = 100, it takes 1 second
+                .duration(500) // When speed = 100, it takes 1 second
                 .ease('linear')
                 .transition()
                 .attrTween('transform', reverse(tweenRiser))
-                .duration(1000)
+                .duration(500)
                 .ease('linear')
                 .transition()
                 .attrTween('transform', reverse(tweenTread))
-                .duration(6000)
+                .duration(3000)
                 .ease('linear')
                 .transition()
                 .attrTween('transform', tweenTread)
-                .duration(6000)
+                .duration(3000)
                 .ease('linear')
                 .each('end', function () {
                     animate(wheel);

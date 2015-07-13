@@ -131,11 +131,11 @@ function wheelStepTreadSimulation() {
     function animate(wheel) {
       wheel.transition()
           .attrTween('transform', tween)
-          .duration((110 - speed) * 100) // When speed = 100, it takes 1 second
+          .duration((110 - speed) * 50) // When speed = 100, it takes 1 second
           .ease('linear')
           .transition()
           .attrTween('transform', reverse(tween))
-          .duration((110 - speed) * 100)
+          .duration((110 - speed) * 50)
           .ease('linear')
           .each('end', function () {
             animate(wheel);

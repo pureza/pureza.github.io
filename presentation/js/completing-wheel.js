@@ -140,7 +140,7 @@ function completingWheelSimulation() {
             node
                 .transition()
                 .delay(function() {
-                    return (k == 2) ? 4000 : 0;
+                    return (k == 2) ? 2000 : 0;
                 })
                     .each('start', function() {
                         node

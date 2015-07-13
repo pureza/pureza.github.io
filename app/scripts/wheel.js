@@ -427,6 +427,11 @@ function initSliders() {
       n2Label.text(N2);
       draw(world);
     });
+
+  d3.select('#about-link')
+    . on('click', function() {
+      console.log("clicked");
+    });
 }
 
 initSliders();

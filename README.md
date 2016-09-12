@@ -1,6 +1,6 @@
 # pureza.github.io
 
-This is the repository for my [github.io](http://pureza.github.io/) website where I will place some of my random web projects.
+This is the repository for my github.io website where I will place some of my random web projects.
 
 ## Wheels for Staircases
 
